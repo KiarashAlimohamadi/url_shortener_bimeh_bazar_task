@@ -43,6 +43,13 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+
+###ورود به project directory
+
+``` bash
+cd core
+```
+
 ### اجرای Migration
 
 ``` bash
