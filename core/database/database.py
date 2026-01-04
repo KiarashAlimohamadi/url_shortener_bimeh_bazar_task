@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker,declarative_base
 
 #================================================================
 
-SQLALCHEMY_DATABASE_URL: str = "sqlite:///../sqlite.db"
+SQLALCHEMY_DATABASE_URL: str = "sqlite:///../db.sqlite3"
 
 
 engine = create_engine(
