@@ -10,3 +10,4 @@ from url_shortener.routes import router as url_routers
 app = FastAPI()
 app.include_router(url_routers)
 
+
