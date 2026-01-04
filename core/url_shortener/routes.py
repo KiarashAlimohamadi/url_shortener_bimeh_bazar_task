@@ -24,4 +24,13 @@ def generate_short_code(length :int = 8) -> str:
 
 
 #================= ROUTES =================================
-#@router.post()
+@router.post("/shorten",response_model=URLResponseSchema)
+async def shorten_url(request:URLCreateSchema,db : Session = Depends(get_db)):
+    short_code = generate_short_code()
+    new_url = UrlsModel(orignial_url = request.url,short_code=short_code)
+    db.add(new_url)
+    db.commit()
+    db.refresh(new_url)
+    return new_url
+
+
