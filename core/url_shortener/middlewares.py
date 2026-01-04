@@ -26,7 +26,7 @@ class ShortURLLoggingMiddleware(BaseHTTPMiddleware):
                 if url:
                     db.execute(update(UrlsModel).where(UrlsModel.id == url.id).values(visit_count=UrlsModel.visit_count + 1))
 
-                    stat = StatsModel(url_id=url.id,ip=request.client.host,created_at=datetime.utcnow())
+                    stat = StatsModel(url_id=url.id,ip=request.client.host,visit_time=datetime.utcnow())
                     db.add(stat)
                     db.commit()
             finally:
