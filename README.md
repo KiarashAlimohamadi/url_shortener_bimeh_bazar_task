@@ -37,6 +37,14 @@ python -m venv venv
 source venv/bin/activate
 ```
 
+
+### ریپو clone
+
+``` bash
+git clone git@github.com:KiarashAlimohamadi/url_shortener_bimeh_bazar_task.git
+```
+
+
 ### نصب وابستگی‌ها
 
 ``` bash
