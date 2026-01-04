@@ -52,7 +52,7 @@ pip install -r requirements.txt
 ```
 
 
-###ورود به project directory
+##ورود به project directory
 
 ``` bash
 cd core
