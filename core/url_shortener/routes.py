@@ -15,7 +15,7 @@ from sqlalchemy import update
 #==========================================================
 
 #================= ROUTER SETUP ===========================
-router = APIRouter(tags=["url_shortener"],prefix="/short")
+router = APIRouter(tags=["url_shortener"],prefix="")
 #==========================================================
 
 #=============== FUNCTIONS ================================
@@ -39,6 +39,8 @@ async def shorten_url(request:URLCreateSchema,db : Session = Depends(get_db)):
     return new_url
 
 
+
+
 @router.get('/{short_code}')
 async def redirect(short_code: str, request: Request, db: Session = Depends(get_db)):
     url = db.query(UrlsModel).filter(UrlsModel.short_code == short_code).first()
@@ -55,6 +57,16 @@ async def redirect(short_code: str, request: Request, db: Session = Depends(get_
     db.refresh(stat)
     return RedirectResponse(url=url.original_url,status_code=status.HTTP_302_FOUND)
 
+
+@router.get("/stats/{short_code}")
+async def show_stats(short_code:str,db : Session = Depends(get_db)):
+    url = db.query(UrlsModel).filter(UrlsModel.short_code==short_code).first()
+    if not url:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Short URL not found")
+    visit_count = url.visit_count
+    return JSONResponse(content={
+        "visit_count" : visit_count
+    },status_code=status.HTTP_302_FOUND)
 
 
 
