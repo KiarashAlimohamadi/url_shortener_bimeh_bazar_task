@@ -1,6 +1,7 @@
 #====================== IMPORTS ==========================
 
 from fastapi import APIRouter,Path,Depends,HTTPException,status
+from fastapi import Request
 from fastapi.responses import JSONResponse
 from database.models import StatsModel,UrlsModel
 from sqlalchemy.orm import Session
@@ -9,6 +10,7 @@ import random
 import string
 from .schemas import URLCreateSchema,URLResponseSchema
 from fastapi.responses import RedirectResponse
+from sqlalchemy import update
 
 #==========================================================
 
@@ -38,10 +40,19 @@ async def shorten_url(request:URLCreateSchema,db : Session = Depends(get_db)):
 
 
 @router.get('/{short_code}')
-async def redirect(short_code:str,db:Session = Depends(get_db)):
+async def redirect(short_code: str, request: Request, db: Session = Depends(get_db)):
     url = db.query(UrlsModel).filter(UrlsModel.short_code == short_code).first()
     if not url:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Short URL not found")
+    db.execute(
+        update(UrlsModel)
+        .where(UrlsModel.id == url.id)
+        .values(visit_count=UrlsModel.visit_count + 1)
+    )
+    stat = StatsModel(url_id=url.id,ip=request.client.host)
+    db.add(stat)
+    db.commit()
+    db.refresh(stat)
     return RedirectResponse(url=url.original_url,status_code=status.HTTP_302_FOUND)
 
 
